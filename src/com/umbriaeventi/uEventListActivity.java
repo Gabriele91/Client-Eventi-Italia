@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.SearchView;
 
 
 /**
@@ -96,6 +97,24 @@ public class uEventListActivity extends FragmentActivity
 	                .findFragmentById(R.id.uevent_list))
 	                .setActivateOnItemClick(true);
 	    }
+	    //set serch menu events
+	    SearchView srchCity=(SearchView) findViewById(R.id.searchCity);
+	    srchCity.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String newText) {
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+            	searchCity(newText);
+                return true;
+            }
+        });
+    }
+    
+    private void searchCity(String name){
+    	uEventListFragment uelf=((uEventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
+    	uelf.setFilterList(name);
     }
     
     private class DownloadCitiesTask extends AsyncTask<String, Void, Object> {

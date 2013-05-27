@@ -1,5 +1,8 @@
 package com.umbriaeventi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -8,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.umbriaeventi.dummy.DummyContent;
+import com.umbriaeventi.dummy.DummyContent.DummyItem;
 
 /**
  * A list fragment representing a list of uEvents. This fragment
@@ -68,14 +72,17 @@ public class uEventListFragment extends ListFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+        super.onCreate(savedInstanceState);        
+        //temp items
+        List< DummyContent.DummyItem > tmpArray=new ArrayList< DummyContent.DummyItem > ();       
+        for(int i=0;i<DummyContent.ITEMS.size();++i) tmpArray.add(DummyContent.ITEMS.get(i));
         // TODO: replace with a real list adapter.
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                tmpArray));
+
     }
 
     @Override
@@ -139,6 +146,24 @@ public class uEventListFragment extends ListFragment {
                 : ListView.CHOICE_MODE_NONE);
     }
 
+    public void setFilterList(String name){
+    	ArrayAdapter<DummyContent.DummyItem> ad = (ArrayAdapter<DummyContent.DummyItem>) getListView().getAdapter(); 
+        ad.clear();   	
+    	if(name.equals("")){
+    		ad.addAll(DummyContent.ITEMS);
+    	}
+    	else{
+	        for (int i = 0; i < DummyContent.ITEMS.size(); i++) {
+	           if (name.length() <= DummyContent.ITEMS.get(i).city.length()) {
+	              if (name.equalsIgnoreCase( (String) DummyContent.ITEMS.get(i).city.subSequence(0,name.length()))) {
+	                 ad.add(DummyContent.ITEMS.get(i));
+	              }
+	           }
+	        }
+        }
+        ad.notifyDataSetChanged();
+    }
+    
     private void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);

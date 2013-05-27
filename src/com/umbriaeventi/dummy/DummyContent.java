@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -21,7 +22,7 @@ public class DummyContent {
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+    public static TreeMap<String, DummyItem> ITEM_MAP = new TreeMap<String, DummyItem>();
 
     public static void addItem(DummyItem item) {
         ITEMS.add(item);

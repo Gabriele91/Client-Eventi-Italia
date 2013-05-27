@@ -20,13 +20,24 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
 
-    <fragment
-        android:id="@+id/uevent_list"
-        android:name="com.umbriaeventi.uEventListFragment"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:orientation="vertical" >
+    <SearchView
+        android:id="@+id/searchCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </SearchView>
+    <fragment
+        android:id="@+id/uevent_list"
+        android:name="com.umbriaeventi.uEventListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         tools:layout="@android:layout/list_content" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/uevent_detail_container"

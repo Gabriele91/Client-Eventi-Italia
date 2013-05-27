@@ -1,10 +1,30 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/uevent_list"
-    android:name="com.umbriaeventi.uEventListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    tools:context=".uEventListActivity"
-    tools:layout="@android:layout/list_content" />
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="vertical"
+    android:showDividers="middle"
+    tools:context=".uEventListActivity" >
+    
+	<SearchView
+	    android:id="@+id/searchCity"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" >
+	</SearchView>
+	
+	<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
+	    android:id="@+id/uevent_list"
+	    android:name="com.umbriaeventi.uEventListFragment"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_marginLeft="16dp"
+	    android:layout_marginRight="16dp"
+	    tools:context=".uEventListActivity"
+	    tools:layout="@android:layout/list_content" />
+	
+</LinearLayout>
