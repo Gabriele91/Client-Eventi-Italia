@@ -122,7 +122,8 @@ public class uEventListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+    	ArrayAdapter<DummyContent.DummyItem> ad = (ArrayAdapter<DummyContent.DummyItem>) getListView().getAdapter();     	
+        mCallbacks.onItemSelected(ad.getItem(position).id);
     }
 
     @Override
