@@ -65,6 +65,8 @@ public class uEventListActivity extends FragmentActivity
     }
     
     public boolean addCity(){
+    	//
+    	DummyContent.clear();
     	//download cities
     	if(cities==null) cities=uEventUrls.getCities();    	
     	//no cities, exit from app

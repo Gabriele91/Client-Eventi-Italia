@@ -24,6 +24,13 @@ public class DummyContent {
      */
     public static TreeMap<String, DummyItem> ITEM_MAP = new TreeMap<String, DummyItem>();
 
+    public static boolean isEmpty(){
+    	return ITEMS.isEmpty();
+    }
+    public static void clear(){
+		ITEMS.clear();
+    	ITEM_MAP.clear();
+    }
     public static void addItem(DummyItem item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);

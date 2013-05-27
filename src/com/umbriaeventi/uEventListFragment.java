@@ -70,20 +70,19 @@ public class uEventListFragment extends ListFragment {
     public uEventListFragment() {
     }
 
+    private List< DummyContent.DummyItem > ITEMS_TMP_SERCH=null;    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);        
+        super.onCreate(savedInstanceState);    
         //temp items
-        List< DummyContent.DummyItem > tmpArray=new ArrayList< DummyContent.DummyItem > ();       
-        for(int i=0;i<DummyContent.ITEMS.size();++i) tmpArray.add(DummyContent.ITEMS.get(i));
+    	ITEMS_TMP_SERCH=new ArrayList< DummyContent.DummyItem > (DummyContent.ITEMS);   
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                tmpArray));
-
-    }
+        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>( getActivity(), 
+        														 android.R.layout.simple_list_item_activated_1, 
+        														 android.R.id.text1, 
+        														 DummyContent.ITEMS));
+     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -151,13 +150,13 @@ public class uEventListFragment extends ListFragment {
     	ArrayAdapter<DummyContent.DummyItem> ad = (ArrayAdapter<DummyContent.DummyItem>) getListView().getAdapter(); 
         ad.clear();   	
     	if(name.equals("")){
-    		ad.addAll(DummyContent.ITEMS);
+    		ad.addAll(ITEMS_TMP_SERCH);
     	}
     	else{
-	        for (int i = 0; i < DummyContent.ITEMS.size(); i++) {
-	           if (name.length() <= DummyContent.ITEMS.get(i).city.length()) {
-	              if (name.equalsIgnoreCase( (String) DummyContent.ITEMS.get(i).city.subSequence(0,name.length()))) {
-	                 ad.add(DummyContent.ITEMS.get(i));
+	        for (int i = 0; i < ITEMS_TMP_SERCH.size(); i++) {
+	           if (name.length() <= ITEMS_TMP_SERCH.get(i).city.length()) {
+	              if (name.equalsIgnoreCase( (String) ITEMS_TMP_SERCH.get(i).city.subSequence(0,name.length()))) {
+	                 ad.add(ITEMS_TMP_SERCH.get(i));
 	              }
 	           }
 	        }

@@ -22,7 +22,7 @@ public class uEventDetailActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_uevent_detail);
 
         // Show the Up button in the action bar.
