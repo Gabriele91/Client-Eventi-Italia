@@ -1,5 +1,8 @@
 package com.umbriaeventi;
 
+import com.umbriaeventi.dummy.DummyContent;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -38,13 +41,16 @@ public class uEventDetailActivity extends FragmentActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(uEventDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(uEventDetailFragment.ARG_ITEM_ID));
+            arguments.putString(uEventDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(uEventDetailFragment.ARG_ITEM_ID));
+            
             uEventDetailFragment fragment = new uEventDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.uevent_detail_container, fragment)
-                    .commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.uevent_detail_container, fragment).commit();
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+            String cityname=DummyContent.ITEM_MAP.get(getIntent().getStringExtra(uEventDetailFragment.ARG_ITEM_ID)).city;          
+            Activity test = (Activity) this;
+            test.setTitle(cityname);
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////  
         }
     }
 
