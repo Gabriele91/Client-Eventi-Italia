@@ -45,10 +45,25 @@ public class uEventUrls {
     	return outWebString;
     }
 	
-	static public String[] getCities(){	
-    	String pageString=getWebPageString(serverCitiesLink);
-		if(pageString==null) return null;
-    	String[] cities=pageString.split(";");
+	static String[] cities=null;
+	
+	static public String[] getCities(){			
+		if(cities==null){
+	    	String pageString=getWebPageString(serverCitiesLink);
+			if(pageString==null) return null;  
+			try {
+				JSONObject jsonObj = new JSONObject(pageString);
+		        JSONArray array=jsonObj.getJSONArray("cities");
+		        cities=new String[array.length()];
+		        for(int i=0;i<array.length();++i)
+		        	cities[i]=array.getString(i);
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Log.e("Error parse json",e.toString());
+			}	
+		}
     	return cities;
 	}
 	
