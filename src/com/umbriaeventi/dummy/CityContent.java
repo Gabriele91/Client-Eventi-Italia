@@ -12,17 +12,17 @@ import java.util.TreeMap;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent {
+public class CityContent {
 
     /**
      * An array of sample (dummy) items.
      */
-    public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+    public static List<CityItem> ITEMS = new ArrayList<CityItem>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static TreeMap<String, DummyItem> ITEM_MAP = new TreeMap<String, DummyItem>();
+    public static TreeMap<String, CityItem> ITEM_MAP = new TreeMap<String, CityItem>();
 
     public static boolean isEmpty(){
     	return ITEMS.isEmpty();
@@ -31,18 +31,18 @@ public class DummyContent {
 		ITEMS.clear();
     	ITEM_MAP.clear();
     }
-    public static void addItem(DummyItem item) {
+    public static void addItem(CityItem item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
     }
     /**
      * A dummy item representing a piece of content.
      */
-    public static class DummyItem {
+    public static class CityItem {
         public String id;
         public String city;
 
-        public DummyItem(String id,String city) {
+        public CityItem(String id,String city) {
             this.id = id;
             this.city = city;
         }

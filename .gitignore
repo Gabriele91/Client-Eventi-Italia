@@ -1,3 +1,7 @@
+*.iml
+.idea
+build
+out
 bin/**
 tmp/**
 tmp/**/*

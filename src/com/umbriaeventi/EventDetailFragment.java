@@ -25,15 +25,15 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.umbriaeventi.dummy.DummyContent;
+import com.umbriaeventi.dummy.CityContent;
 
 /**
  * A fragment representing a single uEvent detail screen.
- * This fragment is either contained in a {@link uEventListActivity}
- * in two-pane mode (on tablets) or a {@link uEventDetailActivity}
+ * This fragment is either contained in a {@link EventListActivity}
+ * in two-pane mode (on tablets) or a {@link EventDetailActivity}
  * on handsets.
  */
-public class uEventDetailFragment extends Fragment {
+public class EventDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -43,13 +43,13 @@ public class uEventDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private CityContent.CityItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public uEventDetailFragment() {
+    public EventDetailFragment() {
     }
 
     @Override
@@ -60,7 +60,7 @@ public class uEventDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = CityContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
     }
 
@@ -103,12 +103,12 @@ public class uEventDetailFragment extends Fragment {
 	private class RestoreDBTask extends AsyncTask <Object, Void, String>
 	{
 	    private ProgressDialog dialog;
-	    private ArrayList<uEventFeed> events;
+	    private ArrayList<EventFeed> events;
 	    private View rootView;
 	    private LayoutInflater inflater;
 	    private ViewGroup container;
 	    private Bundle savedInstanceState;
-		private DummyContent.DummyItem mItem;
+		private CityContent.CityItem mItem;
 		private boolean showDialog;
 
 		public RestoreDBTask(boolean showDialog){
@@ -199,7 +199,7 @@ public class uEventDetailFragment extends Fragment {
         	    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 
         	    																	 RelativeLayout.LayoutParams.MATCH_PARENT);
         	    showText.setLayoutParams(params);
-        		showText.setText(Html.fromHtml("<p>Nessun evento presente per questa città</p>"));
+        		showText.setText(Html.fromHtml("<p>Nessun evento presente per questa citta'</p>"));
         		showText.setTypeface(null, Typeface.BOLD);
         		showText.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);        		
         		relLayout.addView(showText);
@@ -214,14 +214,14 @@ public class uEventDetailFragment extends Fragment {
 	    @Override
 	    protected String doInBackground(Object... params)
 	    {
-	    	this.mItem=(DummyContent.DummyItem)params[0];
+	    	this.mItem=(CityContent.CityItem)params[0];
 	    	
 	    	if (this.mItem != null) {
 	    		this.rootView=(View)params[1];
 	    		this.inflater=(LayoutInflater)params[2];
 	    		this.container=(ViewGroup)params[3];
 	    		this.savedInstanceState=(Bundle)params[4];	    		
-	    		this.events=uEventUrls.getEvents(this.mItem.city);	        	
+	    		this.events=EventUrls.getEvents(this.mItem.city);	        	
 	        }
 	    	
 	        return "";
@@ -236,7 +236,7 @@ public class uEventDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_uevent_detail, container, false); 
         // add events
         if(mItem!=null)
-        	new RestoreDBTask(uEventUrls.getNotCityEventsExist(mItem.city))
+        	new RestoreDBTask(EventUrls.getNotCityEventsExist(mItem.city))
         	.execute(mItem,rootView,inflater,container,savedInstanceState);       
         /////////////////////////
         return rootView;

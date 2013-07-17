@@ -3,5 +3,5 @@
     android:id="@+id/uevent_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".uEventDetailActivity"
+    tools:context=".EventDetailActivity"
     tools:ignore="MergeRootFrame" />

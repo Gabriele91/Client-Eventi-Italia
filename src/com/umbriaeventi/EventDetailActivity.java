@@ -1,24 +1,27 @@
 package com.umbriaeventi;
 
-import com.umbriaeventi.dummy.DummyContent;
+import com.umbriaeventi.dummy.CityContent;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 /**
  * An activity representing a single uEvent detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link uEventListActivity}.
+ * in a {@link EventListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link uEventDetailFragment}.
+ * more than a {@link EventDetailFragment}.
  */
-public class uEventDetailActivity extends FragmentActivity {
+public class EventDetailActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +44,13 @@ public class uEventDetailActivity extends FragmentActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(uEventDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(uEventDetailFragment.ARG_ITEM_ID));
+            arguments.putString(EventDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(EventDetailFragment.ARG_ITEM_ID));
             
-            uEventDetailFragment fragment = new uEventDetailFragment();
+            EventDetailFragment fragment = new EventDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.uevent_detail_container, fragment).commit();
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-            String cityname=DummyContent.ITEM_MAP.get(getIntent().getStringExtra(uEventDetailFragment.ARG_ITEM_ID)).city;          
+            String cityname=CityContent.ITEM_MAP.get(getIntent().getStringExtra(EventDetailFragment.ARG_ITEM_ID)).city;          
             Activity test = (Activity) this;
             test.setTitle(cityname);
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////  
@@ -65,9 +68,22 @@ public class uEventDetailActivity extends FragmentActivity {
                 //
                 // http://developer.android.com/design/patterns/navigation.html#up-vs-back
                 //
-                NavUtils.navigateUpTo(this, new Intent(this, uEventListActivity.class));
+                NavUtils.navigateUpTo(this, new Intent(this, EventListActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        //inflater.inflate(R.layout.activity_menu, menu);
+        //menu.add("Hello").setEnabled(true);
+        //SubMenu subMenu = menu.addSubMenu("Color");
+        menu.add(0, 0, 0, "Red");
+        menu.add(0, 0, 0, "Blue");
+        menu.setGroupCheckable(0, true, true);
+
+        return true;
     }
 }

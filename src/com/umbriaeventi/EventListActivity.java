@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.umbriaeventi.dummy.DummyContent;
+import com.umbriaeventi.dummy.CityContent;
 import android.net.Uri;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.SearchView;
 
 
@@ -24,20 +26,20 @@ import android.widget.SearchView;
  * An activity representing a list of uEvents. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link uEventDetailActivity} representing
+ * lead to a {@link EventDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  * <p>
  * The activity makes heavy use of fragments. The list of items is a
- * {@link uEventListFragment} and the item details
- * (if present) is a {@link uEventDetailFragment}.
+ * {@link EventListFragment} and the item details
+ * (if present) is a {@link EventDetailFragment}.
  * <p>
  * This activity also implements the required
- * {@link uEventListFragment.Callbacks} interface
+ * {@link EventListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class uEventListActivity extends FragmentActivity
-        implements uEventListFragment.Callbacks {
+public class EventListActivity extends FragmentActivity
+        implements EventListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -51,7 +53,7 @@ public class uEventListActivity extends FragmentActivity
 		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 	    dialog.setIcon(R.drawable.ic_launcher);
 	    dialog.setTitle("Errore");
-	    dialog.setMessage("Errore di conessione, non vi sono città con eventi");
+	    dialog.setMessage("Errore di conessione, non vi sono citta' con eventi");
 	    dialog.setPositiveButton("chiudi", new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
             dialog.dismiss();
@@ -66,15 +68,15 @@ public class uEventListActivity extends FragmentActivity
     
     public boolean addCity(){
     	//
-    	DummyContent.clear();
+    	CityContent.clear();
     	//download cities
-    	if(cities==null) cities=uEventUrls.getCities();    	
+    	if(cities==null) cities=EventUrls.getCities();    	
     	//no cities, exit from app
     	if(cities==null) return false;    	
     	//add cities
     	for(int i=0;i<cities.length;++i){
-    		DummyContent.addItem(
-    				new DummyContent.DummyItem(
+    		CityContent.addItem(
+    				new CityContent.CityItem(
     						Integer.toString(i),cities[i]
     						));
     	}
@@ -95,7 +97,7 @@ public class uEventListActivity extends FragmentActivity
 	
 	        // In two-pane mode, list items should be given the
 	        // 'activated' state when touched.
-	        ((uEventListFragment) getSupportFragmentManager()
+	        ((EventListFragment) getSupportFragmentManager()
 	                .findFragmentById(R.id.uevent_list))
 	                .setActivateOnItemClick(true);
 	    }
@@ -115,7 +117,7 @@ public class uEventListActivity extends FragmentActivity
     }
     
     private void searchCity(String name){
-    	uEventListFragment uelf=((uEventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
+    	EventListFragment uelf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
     	uelf.setFilterList(name);
     }
     
@@ -166,8 +168,15 @@ public class uEventListActivity extends FragmentActivity
 		        thread.start();
             }
         }
-   }    
-    
+   }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.layout.activity_menu, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {    
     	//connection policy 
@@ -191,7 +200,7 @@ public class uEventListActivity extends FragmentActivity
     }
 
     /**
-     * Callback method from {@link uEventListFragment.Callbacks}
+     * Callback method from {@link EventListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
      */
     @Override
@@ -201,8 +210,8 @@ public class uEventListActivity extends FragmentActivity
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(uEventDetailFragment.ARG_ITEM_ID, id);
-            uEventDetailFragment fragment = new uEventDetailFragment();
+            arguments.putString(EventDetailFragment.ARG_ITEM_ID, id);
+            EventDetailFragment fragment = new EventDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.uevent_detail_container, fragment)
@@ -211,8 +220,8 @@ public class uEventListActivity extends FragmentActivity
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
-            Intent detailIntent = new Intent(this, uEventDetailActivity.class);
-            detailIntent.putExtra(uEventDetailFragment.ARG_ITEM_ID, id);
+            Intent detailIntent = new Intent(this, EventDetailActivity.class);
+            detailIntent.putExtra(EventDetailFragment.ARG_ITEM_ID, id);
             startActivity(detailIntent);
         }
     }

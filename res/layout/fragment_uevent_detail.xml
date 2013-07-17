@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:textSize="40sp"
-    tools:context=".uEventDetailFragment" />
+    tools:context=".EventDetailFragment" />
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
    xmlns:tools="http://schemas.android.com/tools"
@@ -16,6 +16,6 @@
    style="?android:attr/textAppearanceLarge"
    android:layout_width="fill_parent"
    android:layout_height="fill_parent"
-   tools:context=".uEventDetailFragment" >
+   tools:context=".EventDetailFragment" >
 
 </RelativeLayout>

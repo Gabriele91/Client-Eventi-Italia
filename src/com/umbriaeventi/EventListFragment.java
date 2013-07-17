@@ -10,19 +10,19 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.umbriaeventi.dummy.DummyContent;
-import com.umbriaeventi.dummy.DummyContent.DummyItem;
+import com.umbriaeventi.dummy.CityContent;
+import com.umbriaeventi.dummy.CityContent.CityItem;
 
 /**
  * A list fragment representing a list of uEvents. This fragment
  * also supports tablet devices by allowing list items to be given an
  * 'activated' state upon selection. This helps indicate which item is
- * currently being viewed in a {@link uEventDetailFragment}.
+ * currently being viewed in a {@link EventDetailFragment}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class uEventListFragment extends ListFragment {
+public class EventListFragment extends ListFragment {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -67,21 +67,21 @@ public class uEventListFragment extends ListFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public uEventListFragment() {
+    public EventListFragment() {
     }
 
-    private List< DummyContent.DummyItem > ITEMS_TMP_SERCH=null;    
+    private List< CityContent.CityItem > ITEMS_TMP_SERCH=null;    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);    
         //temp items
-    	ITEMS_TMP_SERCH=new ArrayList< DummyContent.DummyItem > (DummyContent.ITEMS);   
+    	ITEMS_TMP_SERCH=new ArrayList< CityContent.CityItem > (CityContent.ITEMS);   
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>( getActivity(), 
+        setListAdapter(new ArrayAdapter<CityContent.CityItem>( getActivity(), 
         														 android.R.layout.simple_list_item_activated_1, 
         														 android.R.id.text1, 
-        														 DummyContent.ITEMS));
+        														 CityContent.ITEMS));
      }
 
     @Override
@@ -121,7 +121,7 @@ public class uEventListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-    	ArrayAdapter<DummyContent.DummyItem> ad = (ArrayAdapter<DummyContent.DummyItem>) getListView().getAdapter();     	
+    	ArrayAdapter<CityContent.CityItem> ad = (ArrayAdapter<CityContent.CityItem>) getListView().getAdapter();     	
         mCallbacks.onItemSelected(ad.getItem(position).id);
     }
 
@@ -147,7 +147,7 @@ public class uEventListFragment extends ListFragment {
     }
 
     public void setFilterList(String name){
-    	ArrayAdapter<DummyContent.DummyItem> ad = (ArrayAdapter<DummyContent.DummyItem>) getListView().getAdapter(); 
+    	ArrayAdapter<CityContent.CityItem> ad = (ArrayAdapter<CityContent.CityItem>) getListView().getAdapter(); 
         ad.clear();   	
     	if(name.equals("")){
     		ad.addAll(ITEMS_TMP_SERCH);

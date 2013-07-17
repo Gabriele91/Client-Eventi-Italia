@@ -7,7 +7,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".uEventListActivity" >
+    tools:context=".EventListActivity" >
 
     <!--
     This layout is a two-pane layout for the uEvents
@@ -32,7 +32,7 @@
     </SearchView>
     <fragment
         android:id="@+id/uevent_list"
-        android:name="com.umbriaeventi.uEventListFragment"
+        android:name="com.umbriaeventi.EventListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
