@@ -70,27 +70,24 @@ public class EventListFragment extends ListFragment {
     public EventListFragment() {
     }
 
-    private List< CityContent.CityItem > ITEMS_TMP_SERCH=null;
+    private List< CityContent.CityItem > ITEMS_TMP_SERCH=null;    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /////////////////
-        //load list items
+        super.onCreate(savedInstanceState); 
         loadListItems();
-        /////////////////
      }
-
+    
     public void loadListItems(){
         //temp items
-        ITEMS_TMP_SERCH=new ArrayList< CityContent.CityItem > (CityContent.ITEMS);
+    	ITEMS_TMP_SERCH=new ArrayList< CityContent.CityItem > (CityContent.ITEMS);   
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<CityContent.CityItem>( getActivity(),
-                        android.R.layout.simple_list_item_activated_1,
-                        android.R.id.text1,
-                        CityContent.ITEMS));
+        setListAdapter(new ArrayAdapter<CityContent.CityItem>( getActivity(), 
+        														 android.R.layout.simple_list_item_activated_1, 
+        														 android.R.id.text1, 
+        														 CityContent.ITEMS));
     }
-
+    
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

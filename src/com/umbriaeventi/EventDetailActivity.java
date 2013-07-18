@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 
 /**
  * An activity representing a single uEvent detail screen. This
@@ -73,5 +70,4 @@ public class EventDetailActivity extends FragmentActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

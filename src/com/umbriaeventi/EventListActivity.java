@@ -5,11 +5,26 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 import com.umbriaeventi.dummy.CityContent;
+
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Address;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -19,7 +34,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuInflater;
 import android.widget.SearchView;
 
 
@@ -46,15 +60,16 @@ public class EventListActivity extends FragmentActivity
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private static boolean mTwoPane;
-    private static boolean firstLoad=true;
+    private boolean mTwoPane;
+    static private String[] cities=null;
     
-    public void showDialogError(){
+
+    public void showDialogErrorMessage(String message){
     	
 		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 	    dialog.setIcon(R.drawable.ic_launcher);
 	    dialog.setTitle("Errore");
-	    dialog.setMessage("Errore di conessione, non vi sono citta' con eventi");
+	    dialog.setMessage(message);
 	    dialog.setPositiveButton("chiudi", new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
             dialog.dismiss();
@@ -70,9 +85,9 @@ public class EventListActivity extends FragmentActivity
     public boolean addCity(){
     	//
     	CityContent.clear();
-    	//download cities (if olready not downloaded)
-    	String[] cities=EventUrls.getCities(EventMenu.getInstance().regionSelect());
-    	//no cities, exit from app (to do: error message)
+    	//download cities (downloaded only first call)
+    	cities=EventUrls.getCities(EventMenu.getInstance().regionSelect());    	
+    	//no cities, exit from app
     	if(cities==null) return false;    	
     	//add cities
     	for(int i=0;i<cities.length;++i){
@@ -83,7 +98,6 @@ public class EventListActivity extends FragmentActivity
     	}
     	return true;
     }
-    
     private void setLayout(){
 
     	//set layout
@@ -118,30 +132,34 @@ public class EventListActivity extends FragmentActivity
     }
     
     private void searchCity(String name){
-    	EventListFragment uelf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
-    	uelf.setFilterList(name);
+    	EventListFragment elf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
+    	elf.setFilterList(name);
     }
-
-    private void reloadCity(){
-        //reload city
-        addCity();
+    private void checkTheInternetConnection(){
+	    ConnectivityManager conMgr =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);	
+	    NetworkInfo[] ninfo=  conMgr.getAllNetworkInfo();
+	    for(int i=0;i<ninfo.length;++i)
+	    	if(ninfo[i].getState()==State.DISCONNECTED)
+        		showDialogErrorMessage("Errore di conessione, bisogna avere una connessione ad internet per utilizzare questa applicazione");	
+	    		
+   }
+    private void reloadList(){
         //change layout
         EventListFragment elf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
         elf.loadListItems();
     }
-    /*
-    private void checkedACityItem(int i){
-        //change selected item (only graphycs)
-        EventListFragment elf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
-        elf.setActivatedPosition(i);
-    }*/
-
+    
     private class DownloadCitiesTask extends AsyncTask<String, Void, Object> {
     	
     	 boolean connesionExt=true;
     	
         protected Object doInBackground(String... args) {
-        	long start = System.currentTimeMillis();
+        	long start = System.currentTimeMillis();    
+        	//get region
+	    	//orrible
+	    	//while(!isGettedRegion){}
+	    	//is find?
+	    	//if(region==null)showDialogErrorMessage("Non sono riuscito a trovare in quale regione ti trovi");    	
             //add cities
             connesionExt=addCity();
             //get end time
@@ -166,7 +184,7 @@ public class EventListActivity extends FragmentActivity
         	setLayout();
             //show dialog errors
             if(!connesionExt) 
-            	showDialogError();
+        		showDialogErrorMessage("Errore di conessione, non vi sono citta' con eventi");
 	        //force selection first item   
             if(mTwoPane){
 		        Thread thread = new Thread(){        	
@@ -183,27 +201,51 @@ public class EventListActivity extends FragmentActivity
 		        thread.start();
             }
         }
-   }
+   }    
+    
+    private LocationManager lManager=null;
+    private LocationListener lListener=null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return EventMenu.getInstance().initGraphicsMenu(menu);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //save old region
         String oldRegion=EventMenu.getInstance().regionSelect();
         //selected?
         if( EventMenu.getInstance().optionsSelected(item) ){
-            if(!oldRegion.equals(EventMenu.getInstance().regionSelect()))
-                reloadCity();
+            if(!oldRegion.equals(EventMenu.getInstance().regionSelect())){
+            	if(EventUrls.getNotCityExist(EventMenu.getInstance().regionSelect())){
+            		new EventLoadingTask(this,
+				            			 "Attendi",
+				            			 "Sto scaricando le citta'",
+				            			 new EventLoadingTask.CallBack() {						
+											 @Override
+											 public Object doInBackground(Object... params) {
+											     addCity();
+												 return null;
+											 }					
+											 @Override
+											 public void onPostExecute(Object result) {
+							            		reloadList();
+											 }
+											
+										 }).execute();
+	                }
+            		else{
+            	        addCity();
+            			reloadList();
+            		}
+            }
             return true;
         }
         else
            return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {    
     	//connection policy 
@@ -212,13 +254,13 @@ public class EventListActivity extends FragmentActivity
         //save state
         super.onCreate(savedInstanceState);
         //only at start
-        if(firstLoad){
+        if(cities==null){
+        	//get connetion state
+        	checkTheInternetConnection();
 	        //set splash screen
 	        setContentView(R.layout.activity_splash_screen);
 	        //create interface
 	        new DownloadCitiesTask().execute();
-            //is loaded
-            firstLoad=false;
         }
         else{
         	//no download
