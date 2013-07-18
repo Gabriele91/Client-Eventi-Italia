@@ -74,16 +74,4 @@ public class EventDetailActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.layout.activity_menu, menu);
-        //menu.add("Hello").setEnabled(true);
-        //SubMenu subMenu = menu.addSubMenu("Color");
-        menu.add(0, 0, 0, "Red");
-        menu.add(0, 0, 0, "Blue");
-        menu.setGroupCheckable(0, true, true);
-
-        return true;
-    }
 }

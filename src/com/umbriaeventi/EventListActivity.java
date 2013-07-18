@@ -18,6 +18,7 @@ import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.widget.SearchView;
 
@@ -45,8 +46,8 @@ public class EventListActivity extends FragmentActivity
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
-    static private String[] cities=null;
+    private static boolean mTwoPane;
+    private static boolean firstLoad=true;
     
     public void showDialogError(){
     	
@@ -69,9 +70,9 @@ public class EventListActivity extends FragmentActivity
     public boolean addCity(){
     	//
     	CityContent.clear();
-    	//download cities
-    	if(cities==null) cities=EventUrls.getCities();    	
-    	//no cities, exit from app
+    	//download cities (if olready not downloaded)
+    	String[] cities=EventUrls.getCities(EventMenu.getInstance().regionSelect());
+    	//no cities, exit from app (to do: error message)
     	if(cities==null) return false;    	
     	//add cities
     	for(int i=0;i<cities.length;++i){
@@ -120,7 +121,21 @@ public class EventListActivity extends FragmentActivity
     	EventListFragment uelf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
     	uelf.setFilterList(name);
     }
-    
+
+    private void reloadCity(){
+        //reload city
+        addCity();
+        //change layout
+        EventListFragment elf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
+        elf.loadListItems();
+    }
+    /*
+    private void checkedACityItem(int i){
+        //change selected item (only graphycs)
+        EventListFragment elf=((EventListFragment) getSupportFragmentManager() .findFragmentById(R.id.uevent_list));
+        elf.setActivatedPosition(i);
+    }*/
+
     private class DownloadCitiesTask extends AsyncTask<String, Void, Object> {
     	
     	 boolean connesionExt=true;
@@ -172,9 +187,21 @@ public class EventListActivity extends FragmentActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.layout.activity_menu, menu);
-        return true;
+        return EventMenu.getInstance().initGraphicsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //save old region
+        String oldRegion=EventMenu.getInstance().regionSelect();
+        //selected?
+        if( EventMenu.getInstance().optionsSelected(item) ){
+            if(!oldRegion.equals(EventMenu.getInstance().regionSelect()))
+                reloadCity();
+            return true;
+        }
+        else
+           return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -185,11 +212,13 @@ public class EventListActivity extends FragmentActivity
         //save state
         super.onCreate(savedInstanceState);
         //only at start
-        if(cities==null){
+        if(firstLoad){
 	        //set splash screen
 	        setContentView(R.layout.activity_splash_screen);
 	        //create interface
 	        new DownloadCitiesTask().execute();
+            //is loaded
+            firstLoad=false;
         }
         else{
         	//no download

@@ -14,9 +14,13 @@ import java.util.HashMap;
 import android.util.Log;
 
 public class EventUrls {
-
+    //vars declaration
+    private static String[] regions=null;
+    static private HashMap<String /* region */, String[] > hashMapCities=new HashMap< String, String[] >();
+    static private HashMap<String /* city */  ,ArrayList<EventFeed> > hashMapFeed=new HashMap<String,ArrayList<EventFeed> > ();
 	public static final String serverLink="http://umbriaeventi.herokuapp.com/";
 
+    //private methos
     static private String canonicalName(String name){
         if(name.length()>0){
             String lowerCase=name.toLowerCase();
@@ -26,18 +30,18 @@ public class EventUrls {
         }
         return "";
     }
-
     static private String getUrlEvents(String region,String area){
         region= canonicalName(region);
         area= canonicalName(area);
         return serverLink+region+"/"+area;
     }
+    static private String getUrlRegions(){
+        return serverLink+"/list";
+    }
     static private String getUrlCity(String region){
         region= canonicalName(region);
         return serverLink+region+"/list";
     }
-
-
     static private String getWebPageString(String strurl){
     	/////////////////////////////////////////
     	String outWebString=null;    	
@@ -63,19 +67,43 @@ public class EventUrls {
     	/////////////////////////////////////////
     	return outWebString;
     }
-	
-	static String[] cities=null;
-	
-	static public String[] getCities(){			
-		if(cities==null){
-	    	String pageString=getWebPageString(getUrlCity("Umbria"));
+
+	//public methos
+    static public String[] getRegions(){
+        if(regions==null){
+            String pageString=getWebPageString(getUrlRegions());
+            if(pageString==null) return null;
+            try {
+                JSONObject jsonObj = new JSONObject(pageString);
+                JSONArray array=jsonObj.getJSONArray("regions");
+                regions=new String[array.length()];
+                for(int i=0;i<array.length();++i)
+                    regions[i]=array.getString(i);
+            }
+            catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.e("Error parse json",e.toString());
+            }
+        }
+        return regions;
+    }
+    static public boolean getNotCityExist(String region){
+        return (!hashMapCities.containsKey(region)||hashMapCities.get(region)==null);
+    }
+	static public String[] getCities(String region){
+		if( getNotCityExist(region)){
+	    	String pageString=getWebPageString(getUrlCity(region));
 			if(pageString==null) return null;  
 			try {
 				JSONObject jsonObj = new JSONObject(pageString);
 		        JSONArray array=jsonObj.getJSONArray("cities");
-		        cities=new String[array.length()];
+                //new array
+                String [] cities=new String[array.length()];
+                hashMapCities.put(region,cities);
+                //add all cities
 		        for(int i=0;i<array.length();++i)
-		        	cities[i]=array.getString(i);
+                    cities[i]=array.getString(i);
 			}
 			catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -83,16 +111,11 @@ public class EventUrls {
 				Log.e("Error parse json",e.toString());
 			}	
 		}
-    	return cities;
+    	return hashMapCities.get(region);
 	}
-	
-	
-	static private HashMap<String,ArrayList<EventFeed> > hashMapFeed = new HashMap<String,ArrayList<EventFeed> > ();
-	
 	static public boolean getNotCityEventsExist(String city){
 		return (!hashMapFeed.containsKey(city)||hashMapFeed.get(city)==null);
 	}
-	
 	static public ArrayList<EventFeed> getEvents(String city){
 		
 		if(getNotCityEventsExist(city)){
