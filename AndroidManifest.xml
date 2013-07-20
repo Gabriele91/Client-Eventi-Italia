@@ -8,14 +8,17 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="17" />
-	<uses-permission android:name="android.permission.INTERNET" /> 
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.umbriaeventi.permission.MAPS_RECEIVE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name="com.umbriaeventi.EventListActivity"
             android:label="@string/app_name" >
@@ -25,14 +28,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.umbriaeventi.EventDetailActivity"
             android:label="@string/title_uevent_detail"
-            android:parentActivityName=".uEventListActivity" >
+            android:parentActivityName=".EventListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".uEventListActivity" />
+                android:value=".EventListActivity" />
         </activity>
+
+        <meta-data
+                android:name="com.google.android.maps.v2.API_KEY"
+                android:value="AIzaSyAiiHkkeqGTIi_FK4_YwDw5x1QQeL10ypc"
+                />
     </application>
 
 </manifest>

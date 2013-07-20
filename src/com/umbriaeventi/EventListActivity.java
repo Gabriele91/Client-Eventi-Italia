@@ -1,29 +1,16 @@
 package com.umbriaeventi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Locale;
 
 import com.umbriaeventi.dummy.CityContent;
 
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Address;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -86,14 +73,16 @@ public class EventListActivity extends FragmentActivity
     	//
     	CityContent.clear();
     	//download cities (downloaded only first call)
-    	cities=EventUrls.getCities(EventMenu.getInstance().regionSelect());    	
+    	cities=EventUrls.getCities(EventMenu.getInstance().regionSelect());
     	//no cities, exit from app
     	if(cities==null) return false;    	
     	//add cities
     	for(int i=0;i<cities.length;++i){
     		CityContent.addItem(
     				new CityContent.CityItem(
-    						Integer.toString(i),cities[i]
+    						Integer.toString(i),
+                            EventMenu.getInstance().regionSelect(),
+                            cities[i]
     						));
     	}
     	return true;
@@ -154,12 +143,7 @@ public class EventListActivity extends FragmentActivity
     	 boolean connesionExt=true;
     	
         protected Object doInBackground(String... args) {
-        	long start = System.currentTimeMillis();    
-        	//get region
-	    	//orrible
-	    	//while(!isGettedRegion){}
-	    	//is find?
-	    	//if(region==null)showDialogErrorMessage("Non sono riuscito a trovare in quale regione ti trovi");    	
+        	long start = System.currentTimeMillis();
             //add cities
             connesionExt=addCity();
             //get end time
@@ -200,16 +184,24 @@ public class EventListActivity extends FragmentActivity
 		        };
 		        thread.start();
             }
+            //now can show menu
+            showOptionMenu=true;
+            invalidateOptionsMenu();
         }
    }    
-    
-    private LocationManager lManager=null;
-    private LocationListener lListener=null;
+
+    //show option menu?
+    private boolean showOptionMenu=false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return EventMenu.getInstance().initGraphicsMenu(menu);
+        if (showOptionMenu) {
+            menu.clear();
+            return EventMenu.getInstance().initGraphicsMenu(menu);
+        }
+        return super.onCreateOptionsMenu(menu);//EventMenu.getInstance().initGraphicsMenu(menu);
     }
+
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -218,7 +210,7 @@ public class EventListActivity extends FragmentActivity
         //selected?
         if( EventMenu.getInstance().optionsSelected(item) ){
             if(!oldRegion.equals(EventMenu.getInstance().regionSelect())){
-            	if(EventUrls.getNotCityExist(EventMenu.getInstance().regionSelect())){
+            	if(EventUrls.getNotCitiesExist(EventMenu.getInstance().regionSelect())){
             		new EventLoadingTask(this,
 				            			 "Attendi",
 				            			 "Sto scaricando le citta'",
@@ -231,6 +223,7 @@ public class EventListActivity extends FragmentActivity
 											 @Override
 											 public void onPostExecute(Object result) {
 							            		reloadList();
+                                                 if(mTwoPane) onItemSelected("0");
 											 }
 											
 										 }).execute();
@@ -238,6 +231,7 @@ public class EventListActivity extends FragmentActivity
             		else{
             	        addCity();
             			reloadList();
+                        if(mTwoPane) onItemSelected("0");
             		}
             }
             return true;
@@ -257,6 +251,9 @@ public class EventListActivity extends FragmentActivity
         if(cities==null){
         	//get connetion state
         	checkTheInternetConnection();
+            //create location objects
+            EventLocation.getInstance().callOnCreateMainThread(this.getApplicationContext(),
+                                                               this.getBaseContext());
 	        //set splash screen
 	        setContentView(R.layout.activity_splash_screen);
 	        //create interface
@@ -267,7 +264,8 @@ public class EventListActivity extends FragmentActivity
         	addCity();
         	//set layout
         	setLayout();
-        } 	
+        }
+
     }
 
     /**

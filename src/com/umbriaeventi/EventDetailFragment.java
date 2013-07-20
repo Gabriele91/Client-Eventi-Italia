@@ -221,7 +221,7 @@ public class EventDetailFragment extends Fragment {
 	    		this.inflater=(LayoutInflater)params[2];
 	    		this.container=(ViewGroup)params[3];
 	    		this.savedInstanceState=(Bundle)params[4];	    		
-	    		this.events=EventUrls.getEvents(this.mItem.city);	        	
+	    		this.events=EventUrls.getEvents(this.mItem.region,this.mItem.city);
 	        }
 	    	
 	        return "";
@@ -236,7 +236,7 @@ public class EventDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_uevent_detail, container, false); 
         // add events
         if(mItem!=null)
-        	new RestoreDBTask(EventUrls.getNotCityEventsExist(mItem.city))
+        	new RestoreDBTask(EventUrls.getNotCityEventsExist(mItem.region,mItem.city))
         	.execute(mItem,rootView,inflater,container,savedInstanceState);       
         /////////////////////////
         return rootView;

@@ -3,11 +3,14 @@ package com.umbriaeventi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,8 +20,15 @@ public class EventUrls {
     //vars declaration
     private static String[] regions=null;
     static private HashMap<String /* region */, String[] > hashMapCities=new HashMap< String, String[] >();
-    static private HashMap<String /* city */  ,ArrayList<EventFeed> > hashMapFeed=new HashMap<String,ArrayList<EventFeed> > ();
-	public static final String serverLink="http://umbriaeventi.herokuapp.com/";
+
+    static private HashMap< String /* region */,
+                            HashMap<String /* city */  ,
+                                    ArrayList<EventFeed> > >
+                            hashMapFeed=new HashMap< String /* region */,
+                                                      HashMap<String /* city */  ,
+                                                      ArrayList<EventFeed> > >() ;
+
+	public static final String serverLink="http://eventitalia.herokuapp.com/";
 
     //private methos
     static private String canonicalName(String name){
@@ -26,13 +36,20 @@ public class EventUrls {
             String lowerCase=name.toLowerCase();
             String firstCharName=lowerCase.substring(0,1).toUpperCase();
             String lowerName=lowerCase.substring(1,lowerCase.length());
-            return (firstCharName+lowerName).replace(" ","%20");
+            return (firstCharName+lowerName);
         }
         return "";
     }
     static private String getUrlEvents(String region,String area){
         region= canonicalName(region);
         area= canonicalName(area);
+        try {
+            region= URLEncoder.encode(region,"UTF-8");
+            area= URLEncoder.encode(area,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         return serverLink+region+"/"+area;
     }
     static private String getUrlRegions(){
@@ -40,6 +57,12 @@ public class EventUrls {
     }
     static private String getUrlCity(String region){
         region= canonicalName(region);
+        try {
+            region= URLEncoder.encode(region,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         return serverLink+region+"/list";
     }
     static private String getWebPageString(String strurl){
@@ -88,11 +111,11 @@ public class EventUrls {
         }
         return regions;
     }
-    static public boolean getNotCityExist(String region){
+    static public boolean getNotCitiesExist(String region){
         return (!hashMapCities.containsKey(region)||hashMapCities.get(region)==null);
     }
 	static public String[] getCities(String region){
-		if( getNotCityExist(region)){
+		if( getNotCitiesExist(region)){
 	    	String pageString=getWebPageString(getUrlCity(region));
 			if(pageString==null) return null;  
 			try {
@@ -113,15 +136,26 @@ public class EventUrls {
 		}
     	return hashMapCities.get(region);
 	}
-	static public boolean getNotCityEventsExist(String city){
-		return (!hashMapFeed.containsKey(city)||hashMapFeed.get(city)==null);
+
+    static public boolean getNotRegionEventsExist(String region){
+        return (!hashMapFeed.containsKey(region)||hashMapFeed.get(region)==null);
+    }
+	static public boolean getNotCityEventsExist(String region,String city){
+        if(!getNotRegionEventsExist(region))
+            return (!hashMapFeed.get(region).containsKey(city)||hashMapFeed.get(region).get(city)==null);
+        return true;
 	}
-	static public ArrayList<EventFeed> getEvents(String city){
-		
-		if(getNotCityEventsExist(city)){
-			
+
+	static public ArrayList<EventFeed> getEvents(String region,String city){
+        //if not exist region event list
+		if(getNotRegionEventsExist(region)) //crate a region event list
+            hashMapFeed.put(region,new HashMap<String  , ArrayList<EventFeed> >());
+
+        //if not exist city event list...
+		if(getNotCityEventsExist(region,city)){
+			//create a region event list
 			ArrayList<EventFeed> feeds=new ArrayList<EventFeed>();
-			String strJson=getWebPageString(getUrlEvents("Umbria",city));
+			String strJson=getWebPageString(getUrlEvents(region,city));
 
 			if(strJson==null) return feeds;
 			
@@ -145,7 +179,7 @@ public class EventUrls {
 					
 					feeds.add(eventObj);
 				}
-				hashMapFeed.put(city, feeds);
+				hashMapFeed.get(region).put(city, feeds);
 				return feeds;
 			}
 			catch (Exception e) {
@@ -154,7 +188,7 @@ public class EventUrls {
 				Log.e("Error parse json",e.toString());
 			}
 		}
-		return hashMapFeed.get(city);
+		return hashMapFeed.get(region).get(city);
 	}
 	
 }

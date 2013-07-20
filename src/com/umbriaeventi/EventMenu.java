@@ -24,76 +24,10 @@ import android.view.MenuItem;
 public class EventMenu {
 
     //var declaration
-    private String regionSelected="Umbria";//to do read from file
+    private String regionSelected=null;
     
     //gps
-    /*
-    private boolean isGettedRegion=false;
-    private String region=null;
-    private void getCurrentLocation() {
-        
-        lManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        
-        lListener = new LocationListener() {
-        	
-        	
-             
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                // TODO Auto-generated method stub
-            }
-             
-            @Override
-            public void onProviderEnabled(String provider) {
-                // TODO Auto-generated method stub
-            }
-             
-            @Override
-            public void onProviderDisabled(String provider) {
-                // TODO Auto-generated method stub
-            }
-             
-            @Override
-            public void onLocationChanged(Location loc) {
-                //GET COORDINATES
-                Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-                List<Address> addresses;                
-				try {
-					
-					addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
-	                if (addresses.size()>0) {
-	                	region=addresses.get(0).getAdminArea();	    
-	                	//delete update
-	                	lManager.removeUpdates(lListener);
-	                }
-	                
-				} catch (IOException e) {
-					
-					Log.e("Gps error;", e.toString());
-					
-				} finally{
-	                //is getted
-	                isGettedRegion=true;					
-				}
-				
-            }
-        };
-        //low quality gps
-        Criteria criteria = new Criteria();
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        criteria.setAccuracy(Criteria.ACCURACY_LOW);        
-        String locationProvider = lManager.getBestProvider(criteria, true);
-        //set update
-        lManager.requestLocationUpdates(locationProvider, 0, 1, lListener);
-        
-    }
-    private void getRegion(){
-    	if(region==null){
-	    	//get region
-	    	getCurrentLocation();
-    	}
-    }
-    */
+
     
     //singleton
     private static EventMenu eventMenu=new EventMenu();
@@ -124,6 +58,21 @@ public class EventMenu {
         return true;
     }
     String regionSelect(){
+        if(regionSelected==null){
+            //get location from gps/internet
+            regionSelected=EventLocation.getInstance().getRegion();
+            //if not get
+            if(regionSelected==null)
+                regionSelected=EventUrls.getRegions()[0]; //return first region
+            else{
+                //if gps location isn't valid...
+                for(String vars:EventUrls.getRegions())
+                    if(vars.equals(regionSelected))
+                        return regionSelected;
+                //return first region
+                regionSelected=EventUrls.getRegions()[0];
+            }
+        }
         return regionSelected;
     }
     //event

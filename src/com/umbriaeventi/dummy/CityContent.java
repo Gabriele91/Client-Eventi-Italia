@@ -40,10 +40,12 @@ public class CityContent {
      */
     public static class CityItem {
         public String id;
+        public String region;
         public String city;
 
-        public CityItem(String id,String city) {
+        public CityItem(String id,String region,String city) {
             this.id = id;
+            this.region = region;
             this.city = city;
         }
 
