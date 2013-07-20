@@ -264,6 +264,8 @@ public class EventListActivity extends FragmentActivity
         	addCity();
         	//set layout
         	setLayout();
+            //show menu
+            showOptionMenu=true;
         }
 
     }

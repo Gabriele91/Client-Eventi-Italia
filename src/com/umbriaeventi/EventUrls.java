@@ -41,11 +41,11 @@ public class EventUrls {
         return "";
     }
     static private String getUrlEvents(String region,String area){
-        region= canonicalName(region);
-        area= canonicalName(area);
+        //region= canonicalName(region);
+        //area= canonicalName(area);
         try {
-            region= URLEncoder.encode(region,"UTF-8");
-            area= URLEncoder.encode(area,"UTF-8");
+            region= URLEncoder.encode(region,"UTF-8").replace("+", "%20");
+            area= URLEncoder.encode(area,"UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -56,9 +56,9 @@ public class EventUrls {
         return serverLink+"/list";
     }
     static private String getUrlCity(String region){
-        region= canonicalName(region);
+        //region= canonicalName(region);
         try {
-            region= URLEncoder.encode(region,"UTF-8");
+            region= URLEncoder.encode(region,"UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
