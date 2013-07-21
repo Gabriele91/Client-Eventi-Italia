@@ -1,4 +1,4 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
 import android.app.ProgressDialog;
 import android.content.Context;

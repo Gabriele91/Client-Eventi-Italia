@@ -1,4 +1,4 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.umbriaeventi.dummy.CityContent;
-import com.umbriaeventi.dummy.CityContent.CityItem;
+import com.eventiitalia.dummy.CityContent;
 
 /**
  * A list fragment representing a list of uEvents. This fragment

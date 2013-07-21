@@ -1,7 +1,7 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
 
-import com.umbriaeventi.dummy.CityContent;
+import com.eventiitalia.dummy.CityContent;
 
 import android.content.pm.ActivityInfo;
 import android.net.NetworkInfo;

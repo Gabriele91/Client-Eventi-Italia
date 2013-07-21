@@ -1,4 +1,4 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.umbriaeventi.dummy.CityContent;
+import com.eventiitalia.dummy.CityContent;
 
 /**
  * A fragment representing a single uEvent detail screen.

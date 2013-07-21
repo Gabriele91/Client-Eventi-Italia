@@ -1,7 +1,5 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
-import android.app.Service;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Address;
@@ -10,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.content.Context;
-import android.os.IBinder;
 import android.util.Log;
 
 import java.io.IOException;

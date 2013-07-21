@@ -1,4 +1,4 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
 public class EventFeed {
 

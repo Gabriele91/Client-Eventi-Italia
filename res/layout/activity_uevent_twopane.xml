@@ -32,7 +32,7 @@
     </SearchView>
     <fragment
         android:id="@+id/uevent_list"
-        android:name="com.umbriaeventi.EventListFragment"
+        android:name="com.eventiitalia.EventListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"

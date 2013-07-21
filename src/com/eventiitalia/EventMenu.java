@@ -1,24 +1,10 @@
-package com.umbriaeventi;
+package com.eventiitalia;
 
 /**
  * Created by Gabriele on 18/07/13.
  */
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import android.content.Context;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class EventMenu {

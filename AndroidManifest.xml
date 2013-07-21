@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.umbriaeventi"
+    package="com.eventiitalia"
     android:versionCode="1"
     android:versionName="1.0" >
     
@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name="com.umbriaeventi.EventListActivity"
+            android:name="com.eventiitalia.EventListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="nosensor"
             android:label="@string/app_name" >
@@ -32,7 +32,7 @@
         </activity>
 
         <activity
-            android:name="com.umbriaeventi.EventDetailActivity"
+            android:name="com.eventiitalia.EventDetailActivity"
             android:label="@string/title_uevent_detail"
             android:parentActivityName=".EventListActivity" >
             <meta-data
