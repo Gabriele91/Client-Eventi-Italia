@@ -123,12 +123,20 @@ public class EventListActivity extends FragmentActivity
     	elf.setFilterList(name);
     }
     private void checkTheInternetConnection(){
-	    ConnectivityManager conMgr =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);	
-	    NetworkInfo[] ninfo=  conMgr.getAllNetworkInfo();
-	    for(int i=0;i<ninfo.length;++i)
-	    	if(ninfo[i].getState()==State.DISCONNECTED)
-        		showDialogErrorMessage("Errore di conessione, bisogna avere una connessione ad internet per utilizzare questa applicazione");	
-	    		
+        ConnectivityManager conMgr =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] ninfo=  conMgr.getAllNetworkInfo();
+        boolean haveConnected=false;
+        for(int i=0;i<ninfo.length;++i) {
+            if (ninfo[i].getTypeName().equalsIgnoreCase("WIFI")||
+                ninfo[i].getTypeName().equalsIgnoreCase("MOBILE")){
+                  if (ninfo[i].isConnected()){
+                    haveConnected = true;
+                    break;
+                  }
+            }
+        }
+        if(!haveConnected)
+            showDialogErrorMessage("Errore di conessione, bisogna avere una connessione ad internet per utilizzare questa applicazione");	
    }
     private void reloadList(){
         //change layout
