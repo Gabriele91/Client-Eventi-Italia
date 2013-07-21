@@ -3,8 +3,6 @@ package com.umbriaeventi;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -13,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,11 +95,15 @@ public class EventDetailFragment extends Fragment {
 	        llOfImage.getLayoutParams().height=215;
 	    }
 	}
-    
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventDialog.hide();
+    }
 	
 	private class RestoreDBTask extends AsyncTask <Object, Void, String>
 	{
-	    private ProgressDialog dialog;
 	    private ArrayList<EventFeed> events;
 	    private View rootView;
 	    private LayoutInflater inflater;
@@ -120,7 +121,7 @@ public class EventDetailFragment extends Fragment {
 	    protected void onPreExecute()
 	    {
 	    	if(this.showDialog)
-	    		dialog = ProgressDialog.show(getActivity(), "Attendi", "sto scaricando le notizie",  true);
+                EventDialog.show(getActivity(), "Attendi", "sto scaricando le notizie");
 	    }
 
 	    @Override
@@ -206,8 +207,9 @@ public class EventDetailFragment extends Fragment {
         		///////////////////////////////////////////////////////////   	  
         	}
 	    	//close dialog
-	    	if(dialog!=null)
-	        	dialog.dismiss();
+	    	if(showDialog){
+                EventDialog.hide();
+            }
 	        //
 	    }
 	    

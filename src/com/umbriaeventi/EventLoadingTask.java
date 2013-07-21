@@ -27,13 +27,13 @@ public class EventLoadingTask  extends AsyncTask <Object, Void, Object> {
     @Override
     protected void onPreExecute()
     {
-    	dialog = ProgressDialog.show(context, title, message,  true);
+        EventDialog.show(context, title, message);
     }
 
     @Override
     protected void onPostExecute(Object result){
-    	dialog.dismiss();
     	callback.onPostExecute(result);
+        EventDialog.hide();
     }
     
 	@Override

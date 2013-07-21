@@ -3,9 +3,7 @@ package com.umbriaeventi;
 
 import com.umbriaeventi.dummy.CityContent;
 
-import android.location.LocationListener;
-import android.location.LocationManager;
-
+import android.content.pm.ActivityInfo;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.net.ConnectivityManager;
@@ -187,6 +185,8 @@ public class EventListActivity extends FragmentActivity
             //now can show menu
             showOptionMenu=true;
             invalidateOptionsMenu();
+            //enable rotation
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
    }    
 
@@ -211,7 +211,7 @@ public class EventListActivity extends FragmentActivity
         if( EventMenu.getInstance().optionsSelected(item) ){
             if(!oldRegion.equals(EventMenu.getInstance().regionSelect())){
             	if(EventUrls.getNotCitiesExist(EventMenu.getInstance().regionSelect())){
-            		new EventLoadingTask(this,
+                    new EventLoadingTask(this,
 				            			 "Attendi",
 				            			 "Sto scaricando le citta'",
 				            			 new EventLoadingTask.CallBack() {						
@@ -224,7 +224,7 @@ public class EventListActivity extends FragmentActivity
 											 public void onPostExecute(Object result) {
 							            		reloadList();
                                                  if(mTwoPane) onItemSelected("0");
-											 }
+                                             }
 											
 										 }).execute();
 	                }
@@ -249,7 +249,9 @@ public class EventListActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         //only at start
         if(cities==null){
-        	//get connetion state
+            //disable rotation
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+            //get connetion state
         	checkTheInternetConnection();
             //create location objects
             EventLocation.getInstance().callOnCreateMainThread(this.getApplicationContext(),
@@ -268,6 +270,12 @@ public class EventListActivity extends FragmentActivity
             showOptionMenu=true;
         }
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventDialog.hide();
     }
 
     /**
