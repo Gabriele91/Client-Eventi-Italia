@@ -45,7 +45,9 @@ public class EventListActivity extends FragmentActivity
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    private boolean mTwoPane=false;
+    private boolean isRunning=false;
+    private String lastItemSelectedInPause=null;
     static private String[] cities=null;
     
 
@@ -177,18 +179,7 @@ public class EventListActivity extends FragmentActivity
         		showDialogErrorMessage("Errore di conessione, non vi sono citta' con eventi");
 	        //force selection first item   
             if(mTwoPane){
-		        Thread thread = new Thread(){        	
-		        	public void run(){
-						try {
-							Thread.sleep(100);//lol...
-			                onItemSelected("0");
-						}
-						catch (InterruptedException e) {
-							Log.e("task error",e.toString());
-						}     		
-		        	}
-		        };
-		        thread.start();
+                onItemSelected("0");
             }
             //now can show menu
             showOptionMenu=true;
@@ -252,7 +243,9 @@ public class EventListActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {    
     	//connection policy 
     	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-    	StrictMode.setThreadPolicy(policy);	
+    	StrictMode.setThreadPolicy(policy);
+        //is running
+        isRunning=true;
         //save state
         super.onCreate(savedInstanceState);
         //only at start
@@ -281,9 +274,23 @@ public class EventListActivity extends FragmentActivity
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        //is running
+        isRunning=true;
+        //if have select item when application was in pause....
+        if(lastItemSelectedInPause!=null)
+            onItemSelected(lastItemSelectedInPause);
+        //is not in pause
+        lastItemSelectedInPause=null;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         EventDialog.hide();
+        //is in pause
+        isRunning=false;
     }
 
     /**
@@ -292,24 +299,27 @@ public class EventListActivity extends FragmentActivity
      */
     @Override
     public void onItemSelected(String id) {
-        if (mTwoPane) {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(EventDetailFragment.ARG_ITEM_ID, id);
-            EventDetailFragment fragment = new EventDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.uevent_detail_container, fragment)
-                    .commit();
+        if(isRunning){
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
+                Bundle arguments = new Bundle();
+                arguments.putString(EventDetailFragment.ARG_ITEM_ID, id);
+                EventDetailFragment fragment = new EventDetailFragment();
+                fragment.setArguments(arguments);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.uevent_detail_container, fragment)
+                        .commit();
 
-        } else {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-            Intent detailIntent = new Intent(this, EventDetailActivity.class);
-            detailIntent.putExtra(EventDetailFragment.ARG_ITEM_ID, id);
-            startActivity(detailIntent);
-        }
+            } else {
+                // In single-pane mode, simply start the detail activity
+                // for the selected item ID.
+                Intent detailIntent = new Intent(this, EventDetailActivity.class);
+                detailIntent.putExtra(EventDetailFragment.ARG_ITEM_ID, id);
+                startActivity(detailIntent);
+            }
+        }else
+            lastItemSelectedInPause=id;
     }
 }
